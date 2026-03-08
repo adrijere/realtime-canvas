@@ -23,6 +23,7 @@ const FAL_APP = "fal-ai/flux-2/klein";
 // ── State ────────────────────────────────────────────────────────────────────
 
 let activePreset      = "studio";
+let strokeColor       = null; // null = use theme default
 let connection        = null;
 let sendDebounceTimer = null;
 let hasDrawn          = false;
@@ -40,6 +41,8 @@ const mergeOutputImg = document.getElementById("merge-output-img");
 const placeholder = document.getElementById("output-placeholder");
 const indicator   = document.getElementById("processing-indicator");
 const presetBtns  = document.querySelectorAll(".preset");
+const userPrompt  = document.getElementById("user-prompt");
+const colorPicker = document.getElementById("color-picker");
 const statusEl    = document.getElementById("status");
 const workspaceEl = document.getElementById("workspace");
 const modeSplitBtn = document.getElementById("mode-split-btn");
@@ -60,7 +63,7 @@ function applyCanvasDefaults() {
   const { canvasBg, stroke } = getThemePalette();
   ctx.fillStyle = canvasBg;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = stroke;
+  ctx.strokeStyle = strokeColor ?? stroke;
   ctx.lineWidth   = 3;
   ctx.lineCap     = "round";
   ctx.lineJoin    = "round";
@@ -167,6 +170,19 @@ modeMergeBtn.addEventListener("click", () => setViewMode("merge"));
 themeToggleBtn.addEventListener("click", () => {
   const nextTheme = document.body.classList.contains("light-theme") ? "dark" : "light";
   applyTheme(nextTheme);
+});
+
+colorPicker.addEventListener("input", (e) => {
+  strokeColor = e.target.value;
+  ctx.strokeStyle = strokeColor;
+});
+
+let promptDebounceTimer = null;
+userPrompt.addEventListener("input", () => {
+  clearTimeout(promptDebounceTimer);
+  promptDebounceTimer = setTimeout(() => {
+    if (hasDrawn) scheduleSend(0);
+  }, 400);
 });
 
 function initFalRealtime() {
@@ -330,7 +346,9 @@ function composePrompt(stylePrompt) {
   const bgHint = document.body.classList.contains("light-theme")
     ? "Keep a pure white background unchanged."
     : "Keep a pure black background unchanged.";
-  return `${stylePrompt}. ${bgHint} Transform only the sketched object in the center. No extra scene or environment. Preserve overall silhouette from the sketch.`;
+  const desc = userPrompt.value.trim();
+  const subjectHint = desc ? ` The subject is: ${desc}.` : "";
+  return `${stylePrompt}.${subjectHint} ${bgHint} Transform only the sketched object in the center. No extra scene or environment. Preserve overall silhouette from the sketch.`;
 }
 
 function markGeneratingState() {
@@ -369,6 +387,8 @@ function applyTheme(theme) {
   document.body.classList.toggle("light-theme", theme === "light");
   localStorage.setItem("klein-theme", theme);
   themeToggleBtn.textContent = theme === "light" ? "Theme: Light" : "Theme: Dark";
+  strokeColor = null;
+  colorPicker.value = theme === "light" ? "#111111" : "#ffffff";
   clearScene();
 }
 

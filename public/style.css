@@ -124,6 +124,36 @@ html, body {
   z-index: 2;
 }
 
+#color-picker {
+  position: absolute;
+  top: 10px;
+  right: 52px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  z-index: 3;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#color-picker::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+#color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+#color-picker::-moz-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
 #clear-btn {
   position: absolute;
   top: 10px;
@@ -247,6 +277,50 @@ html, body {
     transform: scale(1);
     filter: saturate(1) contrast(1);
   }
+}
+
+/* ── Prompt bar ───────────────────────────────────────── */
+
+#prompt-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+#prompt-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+#user-prompt {
+  flex: 1;
+  background: var(--pill-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border-radius: 999px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+#user-prompt::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+#user-prompt:focus {
+  border-color: var(--accent);
 }
 
 /* ── Preset bar ───────────────────────────────────────── */

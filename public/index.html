@@ -14,6 +14,7 @@
         <div class="pane-label">DRAW</div>
         <img id="merge-output-img" alt="" />
         <canvas id="draw-canvas"></canvas>
+        <input type="color" id="color-picker" value="#ffffff" title="Stroke color" />
         <button id="clear-btn" title="Clear canvas">&#x2715;</button>
       </div>
 
@@ -32,6 +33,12 @@
           <div id="processing-indicator"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Prompt bar -->
+    <div id="prompt-bar">
+      <label for="user-prompt" id="prompt-label">Describe</label>
+      <input type="text" id="user-prompt" placeholder="e.g. this is a boat" autocomplete="off" spellcheck="false" />
     </div>
 
     <!-- Style preset bar -->
